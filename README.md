@@ -203,6 +203,176 @@ npm start
 ```
 
 
+# CRUD
+Para implementar o CRUD completo para o recurso posts usando o React Admin com os endpoints do https://jsonplaceholder.typicode.com, você pode configurar a aplicação para realizar operações de listar, criar, editar e deletar publicações. Vou orientar como fazer isso utilizando o jsonServerProvider, que se ajusta bem ao JSONPlaceholder por ser compatível com APIs RESTful.
+
+## Passo 1: Configurar o dataProvider para a API
+
+No arquivo App.tsx, configure o dataProvider para apontar para o host https://jsonplaceholder.typicode.com. Com o jsonServerProvider, o React Admin conseguirá automaticamente entender e mapear os endpoints necessários.
+
+```typescript
+// App.tsx
+import React from 'react';
+import { Admin, Resource } from 'react-admin';
+import jsonServerProvider from 'ra-data-json-server';
+import { PostList, PostEdit, PostCreate, PostShow } from './posts';
+
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
+
+function App() {
+    return (
+        <Admin dataProvider={dataProvider}>
+            <Resource
+                name="posts"
+                list={PostList}
+                edit={PostEdit}
+                create={PostCreate}
+                show={PostShow}
+            />
+        </Admin>
+    );
+}
+
+export default App;
+```
+
+## Passo 2: Criar Componentes para o CRUD
+
+Para gerenciar o recurso posts, precisamos criar componentes para as operações de listagem, edição, criação e exibição. Vamos configurar esses componentes usando os componentes padrão do React Admin.
+
+1. Listar (PostList)
+
+O PostList exibe uma lista de postagens em um Datagrid. Cada linha pode ser clicada para editar a postagem.
+
+```typescript
+// posts.tsx
+import React from 'react';
+import { List, Datagrid, TextField, EditButton, ShowButton } from 'react-admin';
+
+export const PostList = () => (
+    <List>
+        <Datagrid rowClick="edit">
+            <TextField source="id" />
+            <TextField source="title" />
+            <TextField source="body" />
+            <EditButton />
+            <ShowButton />
+        </Datagrid>
+    </List>
+);
+```
+
+2. Editar (PostEdit)
+
+O PostEdit fornece um formulário para editar as propriedades de uma postagem específica.
+
+```typescript
+import React from 'react';
+import { Edit, SimpleForm, TextInput } from 'react-admin';
+
+export const PostEdit = () => (
+    <Edit>
+        <SimpleForm>
+            <TextInput source="id" disabled />
+            <TextInput source="title" />
+            <TextInput source="body" multiline />
+        </SimpleForm>
+    </Edit>
+);
+```
+
+3. Criar (PostCreate)
+
+O PostCreate permite criar uma nova postagem.
+
+```typescript
+import React from 'react';
+import { Create, SimpleForm, TextInput } from 'react-admin';
+
+export const PostCreate = () => (
+    <Create>
+        <SimpleForm>
+            <TextInput source="title" />
+            <TextInput source="body" multiline />
+        </SimpleForm>
+    </Create>
+);
+```
+
+4. Exibir (PostShow)
+
+O PostShow permite visualizar os detalhes de uma postagem específica em um formato de somente leitura.
+
+```typescript
+import React from 'react';
+import { Show, SimpleShowLayout, TextField } from 'react-admin';
+
+export const PostShow = () => (
+    <Show>
+        <SimpleShowLayout>
+            <TextField source="id" />
+            <TextField source="title" />
+            <TextField source="body" />
+        </SimpleShowLayout>
+    </Show>
+);
+```
+
+Passo 3: Adicionar os Componentes ao Resource
+
+Agora que criamos todos os componentes para o CRUD, é importante adicioná-los ao Resource para o recurso posts no App.tsx.
+
+```typescript
+// App.tsx
+import React from 'react';
+import { Admin, Resource } from 'react-admin';
+import jsonServerProvider from 'ra-data-json-server';
+import { PostList, PostEdit, PostCreate, PostShow } from './posts';
+
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
+
+function App() {
+    return (
+        <Admin dataProvider={dataProvider}>
+            <Resource
+                name="posts"
+                list={PostList}
+                edit={PostEdit}
+                create={PostCreate}
+                show={PostShow}
+            />
+        </Admin>
+    );
+}
+
+export default App;
+```
+
+Passo 4: Executar a Aplicação
+
+Com tudo configurado, inicie a aplicação com:
+
+```bash
+npm start
+```
+
+Agora, você terá o CRUD completo para o recurso posts:
+
+	1.	Listar: Veja todas as postagens e clique em uma linha para editar ou exibir detalhes.
+	2.	Criar: Adicione uma nova postagem usando o formulário PostCreate.
+	3.	Editar: Atualize os detalhes de uma postagem existente.
+	4.	Exibir: Visualize os detalhes de uma postagem em uma visualização de somente leitura.
+	5.	Excluir: O React Admin adiciona automaticamente a opção de deletar postagens na interface de edição.
+
+Observações
+
+	•	PATCH e PUT: O React Admin suporta tanto PATCH quanto PUT. O jsonServerProvider usado aqui envia PATCH para atualizações parciais, mas PUT será usado automaticamente se todos os campos forem enviados no formulário de edição.
+	•	Limitações do JSONPlaceholder: Embora o React Admin suporte CRUD completo, o JSONPlaceholder é uma API de exemplo e pode simular algumas operações sem persistir dados entre sessões.
+
+Conclusão
+
+Essa configuração permite criar rapidamente um painel administrativo completo para gerenciar postagens utilizando React Admin e JSONPlaceholder. Para produção, você precisaria de uma API real, mas essa estrutura serve como uma ótima base para protótipos e desenvolvimento de provas de conceito.
+
 #### Executando a Prova de Conceito
 
 Para executar o exemplo, siga os passos abaixo:
