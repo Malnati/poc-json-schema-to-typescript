@@ -3,9 +3,7 @@
 import React from 'react';
 import { Create, SimpleForm, NumberField, TextField, BooleanField } from 'react-admin';
 
-interface Props {}
-
-const PostCreate: React.FC<Props> = () => (
+const PostCreate: React.FC = () => (
     <Create>
         <SimpleForm>
             

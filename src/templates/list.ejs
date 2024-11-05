@@ -1,12 +1,11 @@
 // src/<%= name %>List.tsx
 
 import React from 'react';
-import { List, SimpleForm, <%=
+import { List, Datagrid, <%=
     Array.from(new Set(fields.map(field => field.component))).join(', ')
 %> } from 'react-admin';
-interface Props {}
 
-const <%= name %>List: React.FC<Props> = () => (
+const <%= name %>List: React.FC = () => (
     <List>
         <Datagrid rowClick="edit">
             <% fields.forEach(field => { %>

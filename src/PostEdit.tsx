@@ -3,9 +3,7 @@
 import React from 'react';
 import { Edit, SimpleForm, NumberField, TextField, BooleanField } from 'react-admin';
 
-interface Props {}
-
-const PostEdit: React.FC<Props> = () => (
+const PostEdit: React.FC = () => (
     <Edit>
         <SimpleForm>
             

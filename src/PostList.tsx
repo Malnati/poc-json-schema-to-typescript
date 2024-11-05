@@ -1,10 +1,9 @@
 // src/PostList.tsx
 
 import React from 'react';
-import { List, SimpleForm, NumberField, TextField, BooleanField } from 'react-admin';
-interface Props {}
+import { List, Datagrid, NumberField, TextField, BooleanField } from 'react-admin';
 
-const PostList: React.FC<Props> = () => (
+const PostList: React.FC = () => (
     <List>
         <Datagrid rowClick="edit">
             
