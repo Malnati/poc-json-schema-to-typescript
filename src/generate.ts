@@ -11,6 +11,13 @@ const componentMapping: Record<string, string> = {
     boolean: 'BooleanField',
 };
 
+const inputMapping: Record<string, string> = {
+    string: 'TextInput',
+    number: 'NumberInput',
+    integer: 'NumberInput',
+    boolean: 'BooleanInput',
+};
+
 interface Field {
     name: string;
     component: string;
@@ -20,17 +27,32 @@ async function generateComponentsFromSchema(schema: any, name: string) {
     console.log("Generating components from schema with name:", name);
     console.log("Received schema:", JSON.stringify(schema, null, 2));
     
-    const fields: Field[] = Object.keys(schema.properties).map((key) => {
+    let fields: Field[] = [];
+    const showfields: Field[] = Object.keys(schema.properties).map((key) => {
         const fieldType = schema.properties[key].type;
         return {
             name: key,
             component: componentMapping[fieldType] || 'TextField',
         };
     });
+    
+    const inputFields: Field[] = Object.keys(schema.properties).map((key) => {
+        const fieldType = schema.properties[key].type;
+        return {
+            name: key,
+            component: inputMapping[fieldType] || 'TextInput',
+        };
+    });
 
-    console.log("Fields generated for schema:", JSON.stringify(fields, null, 2)); 
-
+    fields = showfields;
+    console.log("Show fields generated for schema:", JSON.stringify(fields, null, 2)); 
+    
     await generateFileFromTemplate('src/templates/list.ejs', `src/${name}List.tsx`, { fields, name });
+    
+    
+    fields = inputFields;
+    console.log("Input fields generated for schema:", JSON.stringify(fields, null, 2)); 
+
     await generateFileFromTemplate('src/templates/create.ejs', `src/${name}Create.tsx`, { fields, name });
     await generateFileFromTemplate('src/templates/edit.ejs', `src/${name}Edit.tsx`, { fields, name });
 }

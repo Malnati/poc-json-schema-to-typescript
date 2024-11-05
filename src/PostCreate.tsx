@@ -1,19 +1,23 @@
 // src/PostCreate.tsx
 
 import React from 'react';
-import { Create, SimpleForm, NumberField, TextField, BooleanField } from 'react-admin';
+import { 
+    Create, 
+    SimpleForm, 
+    NumberInput, TextInput, BooleanInput, ReferenceInput
+} from 'react-admin';
 
 const PostCreate: React.FC = () => (
     <Create>
         <SimpleForm>
             
-                <NumberField source="id" />
+            <ReferenceInput source="id" reference="apps" />
             
-                <TextField source="title" />
+            <TextInput source="title" />
             
-                <TextField source="body" />
+            <TextInput source="body" />
             
-                <BooleanField source="published" />
+            <BooleanInput source="published" />
             
         </SimpleForm>
     </Create>

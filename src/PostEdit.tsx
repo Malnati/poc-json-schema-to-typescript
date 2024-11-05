@@ -1,19 +1,19 @@
 // src/PostEdit.tsx
 
 import React from 'react';
-import { Edit, SimpleForm, NumberField, TextField, BooleanField } from 'react-admin';
+import { Edit, SimpleForm, NumberInput, TextInput, BooleanInput } from 'react-admin';
 
 const PostEdit: React.FC = () => (
     <Edit>
         <SimpleForm>
             
-                <NumberField source="id" />
+                <NumberInput source="id" />
             
-                <TextField source="title" />
+                <TextInput source="title" />
             
-                <TextField source="body" />
+                <TextInput source="body" />
             
-                <BooleanField source="published" />
+                <BooleanInput source="published" />
             
         </SimpleForm>
     </Edit>
