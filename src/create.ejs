@@ -1,0 +1,16 @@
+// src/<%= name %>Create.tsx
+
+import React from 'react';
+import { Create, SimpleForm, <%= fields.map(field => `${field.component}`).join(', ') %> } from 'react-admin';
+
+const <%= name %>Create = () => (
+    <Create>
+        <SimpleForm>
+            <% fields.forEach(field => { %>
+                <<%= field.component %> source="<%= field.name %>" />
+            <% }) %>
+        </SimpleForm>
+    </Create>
+);
+
+export default <%= name %>Create;

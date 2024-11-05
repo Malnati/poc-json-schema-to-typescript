@@ -1,0 +1,16 @@
+// src/<%= name %>List.tsx
+
+import React from 'react';
+import { List, Datagrid, <%= fields.map(field => `${field.component}`).join(', ') %> } from 'react-admin';
+
+const <%= name %>List = () => (
+    <List>
+        <Datagrid rowClick="edit">
+            <% fields.forEach(field => { %>
+                <<%= field.component %> source="<%= field.name %>" />
+            <% }) %>
+        </Datagrid>
+    </List>
+);
+
+export default <%= name %>List;

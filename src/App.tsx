@@ -1,10 +1,27 @@
+// App.tsx
+
 import {
   Admin,
   Resource,
-  ListGuesser,
-  EditGuesser,
-  ShowGuesser,
 } from "react-admin";
-import { Layout } from "./Layout";
+import { PostList, PostEdit, PostCreate, PostShow } from './posts';
 
-export const App = () => <Admin layout={Layout}></Admin>;
+import jsonServerProvider from 'ra-data-json-server';
+
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
+
+function App() {
+    return (
+        <Admin dataProvider={dataProvider}>
+            <Resource
+                name="posts"
+                list={PostList}
+                edit={PostEdit}
+                create={PostCreate}
+                show={PostShow}
+            />
+        </Admin>
+    );
+}
+
+export default App;

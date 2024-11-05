@@ -1,0 +1,16 @@
+// src/<%= name %>Edit.tsx
+
+import React from 'react';
+import { Edit, SimpleForm, <%= fields.map(field => `${field.component}`).join(', ') %> } from 'react-admin';
+
+const <%= name %>Edit = () => (
+    <Edit>
+        <SimpleForm>
+            <% fields.forEach(field => { %>
+                <<%= field.component %> source="<%= field.name %>" />
+            <% }) %>
+        </SimpleForm>
+    </Edit>
+);
+
+export default <%= name %>Edit;
