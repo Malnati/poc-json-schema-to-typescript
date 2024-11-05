@@ -29,9 +29,9 @@ Este repositório contém uma função que dispara uma requisição HTTP para um
 
 ## Passo a Passo
 
-	1.	Disparo de Requisição: A função fetchAndGenerateTypes usa axios para fazer uma requisição GET para o endpoint especificado.
-	2.	Conversão para JSON Schema: A resposta JSON é convertida em um schema JSON utilizando ajv.
-	3.	Geração de Tipos TypeScript: Com o json-schema-to-typescript, o schema JSON é convertido em um tipo TypeScript, que pode ser salvo e usado na aplicação.
+  1.	Disparo de Requisição: A função fetchAndGenerateTypes usa axios para fazer uma requisição GET para o endpoint especificado.
+  2.	Conversão para JSON Schema: A resposta JSON é convertida em um schema JSON utilizando ajv.
+  3.	Geração de Tipos TypeScript: Com o json-schema-to-typescript, o schema JSON é convertido em um tipo TypeScript, que pode ser salvo e usado na aplicação.
 
 ### Exemplo de Código
 
@@ -57,7 +57,7 @@ async function fetchAndGenerateTypes(url: string) {
 
 Aqui está um exemplo de JSON retornado de um endpoint:
 
-```JSON
+```typescript
 {
   "id": 1,
   "name": "John Doe",
@@ -73,7 +73,8 @@ Aqui está um exemplo de JSON retornado de um endpoint:
 
 O json-schema-to-typescript irá gerar o seguinte tipo TypeScript:
 
-```JSON
+
+```typescript
 export interface UserResponse {
   id: number;
   name: string;
