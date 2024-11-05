@@ -116,84 +116,90 @@ export interface UserResponse {
 
 Uma vez que os tipos foram gerados, podemos utilizá-los diretamente em um componente React. Veja o exemplo abaixo:
 
+Primeiro, instale o React Admin no seu projeto:
 
-```typescript
-// types.ts
-export interface UserResponse {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: {
-    street: string;
-    suite: string;
-    city: string;
-    zipcode: string;
-    geo: {
-      lat: string;
-      lng: string;
-    };
-  };
-  phone: string;
-  website: string;
-  company: {
-    name: string;
-    catchPhrase: string;
-    bs: string;
-  };
-}
+```bash
+npm install react-admin
 ```
 
-```typescript
-// api.ts
-import axios from 'axios';
-import { UserResponse } from './types';
+Instale o jsonServerProvider:
 
-export async function fetchUserData(): Promise<UserResponse> {
-    const response = await axios.get<UserResponse>('https://jsonplaceholder.typicode.com/users/2');
-    return response.data;
-}
+```bash
+npm install ra-data-json-server
 ```
 
+Agora, configure o dataProvider no seu arquivo principal, por exemplo, App.tsx:
+
 ```typescript
-// UserComponent.tsx
-import React, { useState, useEffect } from 'react';
-import { UserResponse } from './types';
-import { fetchUserData } from './api';
+// App.tsx
+import React from 'react';
+import { Admin, Resource, List, Datagrid, TextField } from 'react-admin';
+import jsonServerProvider from 'ra-data-json-server';
 
-function UserComponent() {
-    const [user, setUser] = useState<UserResponse | null>(null);
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
-    useEffect(() => {
-        // Carregar os dados do usuário quando o componente monta
-        fetchUserData()
-            .then(data => setUser(data))
-            .catch(error => console.error("Erro ao buscar dados do usuário:", error));
-    }, []);
-
+function App() {
     return (
-        <div>
-            {user ? (
-                <div>
-                    <h2>Usuário: {user.name}</h2>
-                    <p><strong>Username:</strong> {user.username}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Endereço:</strong> {user.address.street}, {user.address.suite}, {user.address.city}, {user.address.zipcode}</p>
-                    <p><strong>Localização:</strong> Latitude {user.address.geo.lat}, Longitude {user.address.geo.lng}</p>
-                    <p><strong>Telefone:</strong> {user.phone}</p>
-                    <p><strong>Website:</strong> {user.website}</p>
-                    <p><strong>Empresa:</strong> {user.company.name}</p>
-                    <p><strong>Slogan:</strong> {user.company.catchPhrase}</p>
-                    <p><strong>Especialidade:</strong> {user.company.bs}</p>
-                </div>
-            ) : (
-                <p>Carregando dados do usuário...</p>
-            )}
-        </div>
+        <Admin dataProvider={dataProvider}>
+            <Resource name="users" list={UserList} />
+        </Admin>
     );
 }
 
-export default UserComponent;
+export default App;
+```
+
+Criar um Componente de Listagem para o React Admin
+
+Vamos criar um componente de listagem para exibir os dados do usuário usando os componentes do React Admin. Este componente UserList será passado como a propriedade list do Resource para o recurso users, que representa a lista de usuários.
+```typescript
+// UserList.tsx
+import React from 'react';
+import { List, Datagrid, TextField, EmailField } from 'react-admin';
+
+export const UserList = () => (
+    <List>
+        <Datagrid rowClick="edit">
+            <TextField source="id" />
+            <TextField source="name" />
+            <TextField source="username" />
+            <EmailField source="email" />
+            <TextField source="phone" />
+            <TextField source="website" />
+            <TextField source="company.name" label="Company" />
+            <TextField source="address.street" label="Street" />
+            <TextField source="address.city" label="City" />
+            <TextField source="address.zipcode" label="Zipcode" />
+        </Datagrid>
+    </List>
+);
+```
+
+Exibir o Recurso no React Admin
+
+No App.tsx, adicione o componente UserList ao recurso users:
+
+```typescript
+import React from 'react';
+import { Admin, Resource } from 'react-admin';
+import jsonServerProvider from 'ra-data-json-server';
+import { UserList } from './UserList'; // Importe o componente de listagem
+
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
+
+function App() {
+    return (
+        <Admin dataProvider={dataProvider}>
+            <Resource name="users" list={UserList} />
+        </Admin>
+    );
+}
+
+export default App;
+```
+
+```bash
+npm start
 ```
 
 
