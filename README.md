@@ -358,16 +358,16 @@ npm start
 
 Agora, você terá o CRUD completo para o recurso posts:
 
-	1.	Listar: Veja todas as postagens e clique em uma linha para editar ou exibir detalhes.
-	2.	Criar: Adicione uma nova postagem usando o formulário PostCreate.
-	3.	Editar: Atualize os detalhes de uma postagem existente.
-	4.	Exibir: Visualize os detalhes de uma postagem em uma visualização de somente leitura.
-	5.	Excluir: O React Admin adiciona automaticamente a opção de deletar postagens na interface de edição.
+  1.	Listar: Veja todas as postagens e clique em uma linha para editar ou exibir detalhes.
+  2.	Criar: Adicione uma nova postagem usando o formulário PostCreate.
+  3.	Editar: Atualize os detalhes de uma postagem existente.
+  4.	Exibir: Visualize os detalhes de uma postagem em uma visualização de somente leitura.
+  5.	Excluir: O React Admin adiciona automaticamente a opção de deletar postagens na interface de edição.
 
 Observações
 
-	•	PATCH e PUT: O React Admin suporta tanto PATCH quanto PUT. O jsonServerProvider usado aqui envia PATCH para atualizações parciais, mas PUT será usado automaticamente se todos os campos forem enviados no formulário de edição.
-	•	Limitações do JSONPlaceholder: Embora o React Admin suporte CRUD completo, o JSONPlaceholder é uma API de exemplo e pode simular algumas operações sem persistir dados entre sessões.
+ •	PATCH e PUT: O React Admin suporta tanto PATCH quanto PUT. O jsonServerProvider usado aqui envia PATCH para atualizações parciais, mas PUT será usado automaticamente se todos os campos forem enviados no formulário de edição.
+ •	Limitações do JSONPlaceholder: Embora o React Admin suporte CRUD completo, o JSONPlaceholder é uma API de exemplo e pode simular algumas operações sem persistir dados entre sessões.
 
 Conclusão
 
@@ -389,3 +389,215 @@ Essa prova de conceito demonstra uma forma eficaz de automatizar a criação de 
 Este projeto é licenciado sob a Licença MIT.
 
 ---
+
+# Dynamic
+
+Para criar uma tela dinâmica no React Admin que se adapta aos dados recebidos, podemos usar json-schema-to-typescript para gerar tipagens baseadas em schemas dinâmicos. Essa abordagem permitirá que o React Admin renderize formulários, data grids, e visualizações automaticamente com base nos campos que ele identifica na resposta dos endpoints.
+
+Aqui está uma solução passo a passo para implementar essa ideia:
+
+## Passo 1: Configurar o json-schema-to-typescript
+
+Primeiro, instale o json-schema-to-typescript para gerar tipagens com base na resposta dos endpoints.
+
+```bash
+npm install json-schema-to-typescript
+```
+
+## Passo 2: Função para Converter JSON para Tipos Dinâmicos
+
+Crie uma função que faz a requisição ao endpoint, converte a resposta JSON em um schema e, em seguida, gera dinamicamente uma interface TypeScript.
+
+```typescript
+// dynamicTypes.ts
+import axios from 'axios';
+import { compile } from 'json-schema-to-typescript';
+import Ajv from 'ajv';
+
+const ajv = new Ajv({ strict: false });
+
+export async function fetchSchemaAndGenerateTypes(url: string) {
+    try {
+        const response = await axios.get(url);
+        const schema = ajv.compileSchema(response.data);
+        const typescriptDefinition = await compile(schema, 'DynamicType');
+        return { schema, typescriptDefinition };
+    } catch (error) {
+        console.error("Erro ao gerar tipos dinamicamente:", error);
+        throw error;
+    }
+}
+```
+
+Essa função gera um schema e uma definição TypeScript (typescriptDefinition) com base na resposta de um endpoint.
+
+## Passo 3: Funções para Renderizar Campos Dinâmicos
+
+Com o React Admin, você pode renderizar dinamicamente campos em List, Create, e Edit a partir do schema gerado.
+
+1. Função para Mapear Campos para Componentes do React Admin
+
+Crie uma função mapFields que transforma campos do schema em componentes do React Admin, como TextField, TextInput, etc., para uso dinâmico nos formulários e data grids.
+
+```typescript
+// fieldMapper.ts
+import React from 'react';
+import { TextField, TextInput, NumberField, NumberInput, BooleanField, BooleanInput } from 'react-admin';
+
+export function mapFields(schema: any, isEditMode: boolean = false) {
+    return Object.keys(schema.properties).map((key) => {
+        const fieldType = schema.properties[key].type;
+        
+        switch (fieldType) {
+            case 'string':
+                return isEditMode ? (
+                    <TextInput key={key} source={key} />
+                ) : (
+                    <TextField key={key} source={key} />
+                );
+            case 'number':
+            case 'integer':
+                return isEditMode ? (
+                    <NumberInput key={key} source={key} />
+                ) : (
+                    <NumberField key={key} source={key} />
+                );
+            case 'boolean':
+                return isEditMode ? (
+                    <BooleanInput key={key} source={key} />
+                ) : (
+                    <BooleanField key={key} source={key} />
+                );
+            default:
+                return isEditMode ? (
+                    <TextInput key={key} source={key} />
+                ) : (
+                    <TextField key={key} source={key} />
+                );
+        }
+    });
+}
+```
+
+Essa função mapFields usa schema.properties para mapear tipos do schema (string, number, boolean, etc.) para os componentes do React Admin.
+
+## Passo 4: Componentes Dinâmicos para CRUD
+
+Agora, crie componentes para List, Create, e Edit que usam fetchSchemaAndGenerateTypes para buscar a estrutura do endpoint e mapFields para renderizar os campos dinamicamente.
+
+1. Listar (DynamicList)
+
+```typescript
+// DynamicList.tsx
+import React, { useEffect, useState } from 'react';
+import { List, Datagrid } from 'react-admin';
+import { fetchSchemaAndGenerateTypes } from './dynamicTypes';
+import { mapFields } from './fieldMapper';
+
+export const DynamicList = ({ endpoint }: { endpoint: string }) => {
+    const [fields, setFields] = useState<JSX.Element[]>([]);
+
+    useEffect(() => {
+        fetchSchemaAndGenerateTypes(endpoint).then(({ schema }) => {
+            setFields(mapFields(schema));
+        });
+    }, [endpoint]);
+
+    return (
+        <List>
+            <Datagrid rowClick="edit">
+                {fields}
+            </Datagrid>
+        </List>
+    );
+};
+```
+
+2. Criar (DynamicCreate)
+
+```typescript
+// DynamicCreate.tsx
+import React, { useEffect, useState } from 'react';
+import { Create, SimpleForm } from 'react-admin';
+import { fetchSchemaAndGenerateTypes } from './dynamicTypes';
+import { mapFields } from './fieldMapper';
+
+export const DynamicCreate = ({ endpoint }: { endpoint: string }) => {
+    const [fields, setFields] = useState<JSX.Element[]>([]);
+
+    useEffect(() => {
+        fetchSchemaAndGenerateTypes(endpoint).then(({ schema }) => {
+            setFields(mapFields(schema, true));
+        });
+    }, [endpoint]);
+
+    return (
+        <Create>
+            <SimpleForm>
+                {fields}
+            </SimpleForm>
+        </Create>
+    );
+};
+```
+
+3. Editar (DynamicEdit)
+
+```typescript
+// DynamicEdit.tsx
+import React, { useEffect, useState } from 'react';
+import { Edit, SimpleForm } from 'react-admin';
+import { fetchSchemaAndGenerateTypes } from './dynamicTypes';
+import { mapFields } from './fieldMapper';
+
+export const DynamicEdit = ({ endpoint }: { endpoint: string }) => {
+    const [fields, setFields] = useState<JSX.Element[]>([]);
+
+    useEffect(() => {
+        fetchSchemaAndGenerateTypes(endpoint).then(({ schema }) => {
+            setFields(mapFields(schema, true));
+        });
+    }, [endpoint]);
+
+    return (
+        <Edit>
+            <SimpleForm>
+                {fields}
+            </SimpleForm>
+        </Edit>
+    );
+};
+```
+
+## Passo 5: Configurar o Resource para Usar Componentes Dinâmicos
+
+No App.tsx, substitua o componente Resource padrão por um que utilize os componentes dinâmicos DynamicList, DynamicCreate, e DynamicEdit. Agora você pode passar um endpoint para esses componentes, permitindo a reutilização para qualquer outro endpoint no futuro.
+
+```typescript
+// App.tsx
+import React from 'react';
+import { Admin, Resource } from 'react-admin';
+import jsonServerProvider from 'ra-data-json-server';
+import { DynamicList, DynamicCreate, DynamicEdit } from './DynamicComponents';
+
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
+
+function App() {
+    return (
+        <Admin dataProvider={dataProvider}>
+            <Resource
+                name="posts"
+                list={<DynamicList endpoint="https://jsonplaceholder.typicode.com/posts" />}
+                create={<DynamicCreate endpoint="https://jsonplaceholder.typicode.com/posts" />}
+                edit={<DynamicEdit endpoint="https://jsonplaceholder.typicode.com/posts/1" />}
+            />
+        </Admin>
+    );
+}
+
+export default App;
+```
+
+Conclusão
+
+Essa implementação permite que seu painel React Admin se adapte automaticamente à estrutura dos dados retornados dos endpoints. Usando json-schema-to-typescript e React Admin, conseguimos construir um painel de administração altamente reutilizável e dinâmico, que pode ser configurado para novos endpoints sem alterações de código, bastando apenas modificar o endpoint nos componentes DynamicList, DynamicCreate, e DynamicEdit.
