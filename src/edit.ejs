@@ -3,7 +3,9 @@
 import React from 'react';
 import { Edit, SimpleForm, <%= fields.map(field => `${field.component}`).join(', ') %> } from 'react-admin';
 
-const <%= name %>Edit = () => (
+interface Props {}
+
+const <%= name %>Edit: React.FC<Props> = () => (
     <Edit>
         <SimpleForm>
             <% fields.forEach(field => { %>

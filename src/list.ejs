@@ -3,7 +3,9 @@
 import React from 'react';
 import { List, Datagrid, <%= fields.map(field => `${field.component}`).join(', ') %> } from 'react-admin';
 
-const <%= name %>List = () => (
+interface Props {}
+
+const <%= name %>List: React.FC<Props> = () => (
     <List>
         <Datagrid rowClick="edit">
             <% fields.forEach(field => { %>
