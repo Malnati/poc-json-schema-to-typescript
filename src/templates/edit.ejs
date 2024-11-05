@@ -1,11 +1,10 @@
 // src/<%= name %>Edit.tsx
 
-import React from 'react';
 import { Edit, SimpleForm, <%=
     Array.from(new Set(fields.map(field => field.component))).join(', ')
 %> } from 'react-admin';
 
-const <%= name %>Edit: React.FC = () => (
+export const <%= name %>Edit = () => (
     <Edit>
         <SimpleForm>
             <% fields.forEach(field => { %>
@@ -14,5 +13,3 @@ const <%= name %>Edit: React.FC = () => (
         </SimpleForm>
     </Edit>
 );
-
-export default <%= name %>Edit;

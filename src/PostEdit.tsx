@@ -1,9 +1,8 @@
 // src/PostEdit.tsx
 
-import React from 'react';
 import { Edit, SimpleForm, NumberInput, TextInput, BooleanInput } from 'react-admin';
 
-const PostEdit: React.FC = () => (
+export const PostEdit = () => (
     <Edit>
         <SimpleForm>
             
@@ -18,5 +17,3 @@ const PostEdit: React.FC = () => (
         </SimpleForm>
     </Edit>
 );
-
-export default PostEdit;
