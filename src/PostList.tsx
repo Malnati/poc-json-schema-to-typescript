@@ -1,8 +1,7 @@
 // src/PostList.tsx
 
 import React from 'react';
-import { List, Datagrid, NumberField, TextField, TextField, BooleanField } from 'react-admin';
-
+import { List, SimpleForm, NumberField, TextField, BooleanField } from 'react-admin';
 interface Props {}
 
 const PostList: React.FC<Props> = () => (

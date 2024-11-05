@@ -1,7 +1,9 @@
 // src/<%= name %>Create.tsx
 
 import React from 'react';
-import { Create, SimpleForm, <%= fields.map(field => `${field.component}`).join(', ') %> } from 'react-admin';
+import { Create, SimpleForm, <%=
+    Array.from(new Set(fields.map(field => field.component))).join(', ')
+%> } from 'react-admin';
 
 interface Props {}
 

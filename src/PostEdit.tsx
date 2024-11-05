@@ -1,7 +1,7 @@
 // src/PostEdit.tsx
 
 import React from 'react';
-import { Edit, SimpleForm, NumberField, TextField, TextField, BooleanField } from 'react-admin';
+import { Edit, SimpleForm, NumberField, TextField, BooleanField } from 'react-admin';
 
 interface Props {}
 

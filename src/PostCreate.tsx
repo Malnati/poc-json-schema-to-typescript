@@ -1,7 +1,7 @@
 // src/PostCreate.tsx
 
 import React from 'react';
-import { Create, SimpleForm, NumberField, TextField, TextField, BooleanField } from 'react-admin';
+import { Create, SimpleForm, NumberField, TextField, BooleanField } from 'react-admin';
 
 interface Props {}
 
