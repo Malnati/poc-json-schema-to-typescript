@@ -1,0 +1,34 @@
+{
+  "name": "poc-json-schema-to-typescript",
+  "version": "1.0.0",
+  "description": "Este repositório tem como objetivo testar uma solução para a geração automática de tipagens TypeScript com base nos retornos de APIs. A solução é útil para melhorar a segurança de tipos em aplicações React, especialmente em projetos que consomem dados dinâmicos de múltiplos endpoints.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Malnati/poc-json-schema-to-typescript.git"
+  },
+  "keywords": [
+    "json-schema",
+    "typescript",
+    "react-admin",
+    "CRUD",
+    "dynamic-components",
+    "EJS",
+    "Docker",
+    "schema-validation",
+    "code-generation"
+  ],
+  "author": "Ricardo Malnati <ricardomalnati@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Malnati/poc-json-schema-to-typescript/issues"
+  },
+  "homepage": "https://github.com/Malnati/poc-json-schema-to-typescript#readme",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/Malnati"
+  }
+}
