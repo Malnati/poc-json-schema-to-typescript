@@ -240,7 +240,7 @@ export default App;
 
 Para gerenciar o recurso posts, precisamos criar componentes para as operações de listagem, edição, criação e exibição. Vamos configurar esses componentes usando os componentes padrão do React Admin.
 
-1. Listar (PostList)
+### 1. Listar (PostList)
 
 O PostList exibe uma lista de postagens em um Datagrid. Cada linha pode ser clicada para editar a postagem.
 
@@ -262,7 +262,7 @@ export const PostList = () => (
 );
 ```
 
-2. Editar (PostEdit)
+### 2. Editar (PostEdit)
 
 O PostEdit fornece um formulário para editar as propriedades de uma postagem específica.
 
@@ -281,7 +281,7 @@ export const PostEdit = () => (
 );
 ```
 
-3. Criar (PostCreate)
+### 3. Criar (PostCreate)
 
 O PostCreate permite criar uma nova postagem.
 
@@ -299,7 +299,7 @@ export const PostCreate = () => (
 );
 ```
 
-4. Exibir (PostShow)
+### 4. Exibir (PostShow)
 
 O PostShow permite visualizar os detalhes de uma postagem específica em um formato de somente leitura.
 
@@ -318,7 +318,7 @@ export const PostShow = () => (
 );
 ```
 
-Passo 3: Adicionar os Componentes ao Resource
+## Passo 3: Adicionar os Componentes ao Resource
 
 Agora que criamos todos os componentes para o CRUD, é importante adicioná-los ao Resource para o recurso posts no App.tsx.
 
@@ -348,7 +348,7 @@ function App() {
 export default App;
 ```
 
-Passo 4: Executar a Aplicação
+## Passo 4: Executar a Aplicação
 
 Com tudo configurado, inicie a aplicação com:
 
