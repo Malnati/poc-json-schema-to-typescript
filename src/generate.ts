@@ -1,8 +1,5 @@
 import fs from 'fs';
 import ejs from 'ejs';
-import Ajv from 'ajv';
-
-const ajv = new Ajv();
 
 const componentMapping: Record<string, string> = {
     string: 'TextField',
