@@ -59,14 +59,26 @@ Aqui está um exemplo de JSON retornado de um endpoint:
 
 ```typescript
 {
-  "id": 1,
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "created_at": "2023-11-05T12:00:00Z",
-  "is_active": true,
-  "profile": {
-    "age": 30,
-    "interests": ["coding", "reading", "gaming"]
+  "id": 2,
+  "name": "Ervin Howell",
+  "username": "Antonette",
+  "email": "Shanna@melissa.tv",
+  "address": {
+    "street": "Victor Plains",
+    "suite": "Suite 879",
+    "city": "Wisokyburgh",
+    "zipcode": "90566-7771",
+    "geo": {
+      "lat": "-43.9509",
+      "lng": "-34.4618"
+    }
+  },
+  "phone": "010-692-6593 x09125",
+  "website": "anastasia.net",
+  "company": {
+    "name": "Deckow-Crist",
+    "catchPhrase": "Proactive didactic contingency",
+    "bs": "synergize scalable supply-chains"
   }
 }
 ```
@@ -78,12 +90,24 @@ O json-schema-to-typescript irá gerar o seguinte tipo TypeScript:
 export interface UserResponse {
   id: number;
   name: string;
+  username: string;
   email: string;
-  created_at: string;
-  is_active: boolean;
-  profile: {
-    age: number;
-    interests: string[];
+  address: {
+    street: string;
+    suite: string;
+    city: string;
+    zipcode: string;
+    geo: {
+      lat: string;
+      lng: string;
+    };
+  };
+  phone: string;
+  website: string;
+  company: {
+    name: string;
+    catchPhrase: string;
+    bs: string;
   };
 }
 ```
@@ -94,38 +118,84 @@ Uma vez que os tipos foram gerados, podemos utilizá-los diretamente em um compo
 
 
 ```typescript
+// types.ts
+export interface UserResponse {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  address: {
+    street: string;
+    suite: string;
+    city: string;
+    zipcode: string;
+    geo: {
+      lat: string;
+      lng: string;
+    };
+  };
+  phone: string;
+  website: string;
+  company: {
+    name: string;
+    catchPhrase: string;
+    bs: string;
+  };
+}
+```
+
+```typescript
+// api.ts
+import axios from 'axios';
 import { UserResponse } from './types';
 
-async function getUserData() {
-    const response = await axios.get<UserResponse>('https://api.exemplo.com/user');
+export async function fetchUserData(): Promise<UserResponse> {
+    const response = await axios.get<UserResponse>('https://jsonplaceholder.typicode.com/users/2');
     return response.data;
 }
+```
+
+```typescript
+// UserComponent.tsx
+import React, { useState, useEffect } from 'react';
+import { UserResponse } from './types';
+import { fetchUserData } from './api';
 
 function UserComponent() {
     const [user, setUser] = useState<UserResponse | null>(null);
 
     useEffect(() => {
-        getUserData().then(data => setUser(data));
+        // Carregar os dados do usuário quando o componente monta
+        fetchUserData()
+            .then(data => setUser(data))
+            .catch(error => console.error("Erro ao buscar dados do usuário:", error));
     }, []);
 
     return (
         <div>
-            {user && (
-                <>
-                    <p>Nome: {user.name}</p>
-                    <p>Email: {user.email}</p>
-                    <p>Idade: {user.profile.age}</p>
-                    <ul>
-                        {user.profile.interests.map((interest, index) => (
-                            <li key={index}>{interest}</li>
-                        ))}
-                    </ul>
-                </>
+            {user ? (
+                <div>
+                    <h2>Usuário: {user.name}</h2>
+                    <p><strong>Username:</strong> {user.username}</p>
+                    <p><strong>Email:</strong> {user.email}</p>
+                    <p><strong>Endereço:</strong> {user.address.street}, {user.address.suite}, {user.address.city}, {user.address.zipcode}</p>
+                    <p><strong>Localização:</strong> Latitude {user.address.geo.lat}, Longitude {user.address.geo.lng}</p>
+                    <p><strong>Telefone:</strong> {user.phone}</p>
+                    <p><strong>Website:</strong> {user.website}</p>
+                    <p><strong>Empresa:</strong> {user.company.name}</p>
+                    <p><strong>Slogan:</strong> {user.company.catchPhrase}</p>
+                    <p><strong>Especialidade:</strong> {user.company.bs}</p>
+                </div>
+            ) : (
+                <p>Carregando dados do usuário...</p>
             )}
         </div>
     );
 }
+
+export default UserComponent;
 ```
+
 
 #### Executando a Prova de Conceito
 
