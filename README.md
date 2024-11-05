@@ -601,3 +601,256 @@ export default App;
 Conclusão
 
 Essa implementação permite que seu painel React Admin se adapte automaticamente à estrutura dos dados retornados dos endpoints. Usando json-schema-to-typescript e React Admin, conseguimos construir um painel de administração altamente reutilizável e dinâmico, que pode ser configurado para novos endpoints sem alterações de código, bastando apenas modificar o endpoint nos componentes DynamicList, DynamicCreate, e DynamicEdit.
+
+# EJS Templates
+
+Para gerar código React dinâmico usando templates EJS que se adaptam a um JSON Schema, podemos criar três arquivos EJS que representam cada uma das operações CRUD — listagem (List), criação (Create), e edição (Edit). Esses templates EJS receberão o JSON Schema como parâmetro e gerarão o código necessário para cada componente de forma dinâmica.
+
+Estrutura dos Arquivos
+
+Vamos criar uma estrutura onde cada operação do CRUD possui seu próprio template EJS. Suponha que esses templates estejam em uma pasta chamada templates.
+
+Estrutura do projeto:
+
+```bash
+project-root/
+├── templates/
+│   ├── list.ejs
+│   ├── create.ejs
+│   └── edit.ejs
+├── generate.js
+
+	•	list.ejs: Template para gerar a tela de listagem (List).
+	•	create.ejs: Template para gerar a tela de criação (Create).
+	•	edit.ejs: Template para gerar a tela de edição (Edit).
+	•	generate.js: Script para processar o JSON Schema e gerar os arquivos React usando os templates.
+```
+
+Conteúdo dos Templates EJS
+
+1. Template list.ejs
+
+Esse template cria um componente List dinâmico para o React Admin que renderiza uma tabela com colunas baseadas nos campos do JSON Schema.
+
+```typescript
+// list.ejs
+import React from 'react';
+import { List, Datagrid, <%= fields.map(field => `${field.component}`).join(', ') %> } from 'react-admin';
+
+const <%= name %>List = () => (
+    <List>
+        <Datagrid rowClick="edit">
+            <% fields.forEach(field => { %>
+                <<%= field.component %> source="<%= field.name %>" />
+            <% }) %>
+        </Datagrid>
+    </List>
+);
+
+export default <%= name %>List;
+```
+
+2. Template create.ejs
+
+Este template cria um formulário Create dinâmico para React Admin com base nos campos do JSON Schema.
+
+```typescript
+// create.ejs
+import React from 'react';
+import { Create, SimpleForm, <%= fields.map(field => `${field.component}`).join(', ') %> } from 'react-admin';
+
+const <%= name %>Create = () => (
+    <Create>
+        <SimpleForm>
+            <% fields.forEach(field => { %>
+                <<%= field.component %> source="<%= field.name %>" />
+            <% }) %>
+        </SimpleForm>
+    </Create>
+);
+
+export default <%= name %>Create;
+```
+
+3. Template edit.ejs
+
+Este template cria um formulário Edit dinâmico para React Admin que edita os campos com base no JSON Schema.
+
+```typescript
+// edit.ejs
+import React from 'react';
+import { Edit, SimpleForm, <%= fields.map(field => `${field.component}`).join(', ') %> } from 'react-admin';
+
+const <%= name %>Edit = () => (
+    <Edit>
+        <SimpleForm>
+            <% fields.forEach(field => { %>
+                <<%= field.component %> source="<%= field.name %>" />
+            <% }) %>
+        </SimpleForm>
+    </Edit>
+);
+
+export default <%= name %>Edit;
+```
+
+Script generate.js para Renderizar Templates EJS
+
+Agora, vamos criar o script generate.js que carrega o JSON Schema, mapeia os campos para os componentes do React Admin, e renderiza os arquivos React usando os templates EJS.
+
+```typescript
+// generate.js
+const fs = require('fs');
+const ejs = require('ejs');
+const { compile } = require('json-schema-to-typescript');
+const Ajv = require('ajv');
+
+const ajv = new Ajv();
+
+const componentMapping = {
+    string: 'TextField',
+    number: 'NumberField',
+    integer: 'NumberField',
+    boolean: 'BooleanField',
+};
+
+async function generateComponentsFromSchema(schema, name) {
+    // Map fields from schema
+    const fields = Object.keys(schema.properties).map((key) => {
+        const fieldType = schema.properties[key].type;
+        return {
+            name: key,
+            component: componentMapping[fieldType] || 'TextField',
+        };
+    });
+
+    // Generate components based on templates
+    await generateFileFromTemplate('templates/list.ejs', `${name}List.js`, { fields, name });
+    await generateFileFromTemplate('templates/create.ejs', `${name}Create.js`, { fields, name });
+    await generateFileFromTemplate('templates/edit.ejs', `${name}Edit.js`, { fields, name });
+}
+
+async function generateFileFromTemplate(templatePath, outputPath, data) {
+    const template = fs.readFileSync(templatePath, 'utf-8');
+    const content = ejs.render(template, data);
+    fs.writeFileSync(outputPath, content, 'utf-8');
+    console.log(`Generated ${outputPath}`);
+}
+
+// Example usage
+(async () => {
+    const schema = {
+        properties: {
+            id: { type: 'integer' },
+            title: { type: 'string' },
+            body: { type: 'string' },
+            published: { type: 'boolean' },
+        },
+    };
+    
+    const name = 'Post';
+    await generateComponentsFromSchema(schema, name);
+})();
+```
+
+Explicação do Script
+
+	•	componentMapping: Define qual componente React Admin será usado com base no tipo de cada campo (string, number, boolean, etc.).
+	•	generateComponentsFromSchema: Função principal que mapeia os campos do schema e renderiza os arquivos com os templates EJS.
+	•	generateFileFromTemplate: Lê o template EJS, renderiza com os dados fornecidos, e grava o arquivo de saída no sistema de arquivos.
+	•	Exemplo de Uso: O script inclui um exemplo de schema para Post com os campos id, title, body, e published.
+
+Executando o Script
+
+Para executar o script e gerar os componentes, execute:
+
+```bash
+node generate.js
+```
+
+Isso gerará três arquivos:
+
+	•	PostList.js
+	•	PostCreate.js
+	•	PostEdit.js
+
+Esses arquivos conterão o código React necessário para os componentes List, Create, e Edit dinamicamente gerados com base no JSON Schema.
+
+Exemplo de Saída para o Schema Post
+
+Se o JSON Schema tiver esta estrutura:
+
+```typescript
+{
+    "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "published": { "type": "boolean" }
+    }
+}
+```
+
+Os arquivos gerados serão semelhantes a:
+
+PostList.js
+
+```typescript
+import React from 'react';
+import { List, Datagrid, TextField, NumberField, BooleanField } from 'react-admin';
+
+const PostList = () => (
+    <List>
+        <Datagrid rowClick="edit">
+            <NumberField source="id" />
+            <TextField source="title" />
+            <TextField source="body" />
+            <BooleanField source="published" />
+        </Datagrid>
+    </List>
+);
+
+export default PostList;
+```
+
+PostCreate.js
+
+```typescript
+import React from 'react';
+import { Create, SimpleForm, TextInput, BooleanInput } from 'react-admin';
+
+const PostCreate = () => (
+    <Create>
+        <SimpleForm>
+            <TextInput source="title" />
+            <TextInput source="body" />
+            <BooleanInput source="published" />
+        </SimpleForm>
+    </Create>
+);
+
+export default PostCreate;
+```
+
+PostEdit.js
+
+```typescript
+import React from 'react';
+import { Edit, SimpleForm, TextInput, BooleanInput } from 'react-admin';
+
+const PostEdit = () => (
+    <Edit>
+        <SimpleForm>
+            <TextInput source="title" />
+            <TextInput source="body" />
+            <BooleanInput source="published" />
+        </SimpleForm>
+    </Edit>
+);
+
+export default PostEdit;
+```
+
+Conclusão
+
+Esse método permite gerar componentes React para React Admin de maneira dinâmica usando templates EJS e JSON Schema. Com isso, é possível criar uma estrutura reutilizável que se adapta a qualquer JSON Schema, tornando o desenvolvimento de CRUDs em React Admin rápido e flexível. Essa abordagem é ideal para aplicações com múltiplos endpoints, onde a estrutura de dados pode variar.
