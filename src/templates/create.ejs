@@ -1,13 +1,12 @@
 // src/<%= name %>Create.tsx
 
-import React from 'react';
 import { 
     Create, 
     SimpleForm, 
     <%=Array.from(new Set(fields.map(field => field.component))).join(', ')%><% fields.forEach(field => {%><% if(field.name === 'id'){%>, ReferenceInput<%}%><%})%>
 } from 'react-admin';
 
-const <%= name %>Create: React.FC = () => (
+export const <%= name %>Create = () => (
     <Create>
         <SimpleForm>
             <% fields.forEach(field => { %>
@@ -16,5 +15,3 @@ const <%= name %>Create: React.FC = () => (
         </SimpleForm>
     </Create>
 );
-
-export default <%= name %>Create;
