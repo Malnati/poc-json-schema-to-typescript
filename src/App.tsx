@@ -1,27 +1,26 @@
-// App.tsx
+// src/App.tsx
 
-import {
-  Admin,
-  Resource,
-} from "react-admin";
-import { PostList, PostEdit, PostCreate, PostShow } from './posts';
-
+import React from 'react';
+import { Admin, Resource } from 'react-admin';
 import jsonServerProvider from 'ra-data-json-server';
+
+import PostList from './PostList';
+import PostCreate from './PostCreate';
+import PostEdit from './PostEdit';
 
 const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
-function App() {
-    return (
-        <Admin dataProvider={dataProvider}>
-            <Resource
-                name="posts"
-                list={PostList}
-                edit={PostEdit}
-                create={PostCreate}
-                show={PostShow}
-            />
-        </Admin>
-    );
-}
+const App: React.FC = () => (
+    <Admin dataProvider={dataProvider}>
+        
+        <Resource
+            name="posts"
+            list={PostList}
+            create={PostCreate}
+            edit={PostEdit}
+        />
+        
+    </Admin>
+);
 
 export default App;

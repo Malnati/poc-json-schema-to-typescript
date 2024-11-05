@@ -1,4 +1,3 @@
-// generate.ts
 import fs from 'fs';
 import ejs from 'ejs';
 import Ajv from 'ajv';
@@ -18,6 +17,9 @@ interface Field {
 }
 
 async function generateComponentsFromSchema(schema: any, name: string) {
+    console.log("Generating components from schema with name:", name);
+    console.log("Received schema:", JSON.stringify(schema, null, 2));
+    
     const fields: Field[] = Object.keys(schema.properties).map((key) => {
         const fieldType = schema.properties[key].type;
         return {
@@ -26,24 +28,31 @@ async function generateComponentsFromSchema(schema: any, name: string) {
         };
     });
 
-    await generateFileFromTemplate('templates/list.ejs', `src/${name}List.tsx`, { fields, name });
-    await generateFileFromTemplate('templates/create.ejs', `src/${name}Create.tsx`, { fields, name });
-    await generateFileFromTemplate('templates/edit.ejs', `src/${name}Edit.tsx`, { fields, name });
+    console.log("Fields generated for schema:", JSON.stringify(fields, null, 2)); 
+
+    await generateFileFromTemplate('src/templates/list.ejs', `src/${name}List.tsx`, { fields, name });
+    await generateFileFromTemplate('src/templates/create.ejs', `src/${name}Create.tsx`, { fields, name });
+    await generateFileFromTemplate('src/templates/edit.ejs', `src/${name}Edit.tsx`, { fields, name });
 }
 
 async function generateAppFile(resources: string[]) {
-    await generateFileFromTemplate('templates/app.ejs', 'src/App.tsx', { resources });
+    console.log("Generating App.tsx with resources:", resources); 
+    await generateFileFromTemplate('src/templates/app.ejs', 'src/App.tsx', { resources });
 }
 
 async function generateFileFromTemplate(templatePath: string, outputPath: string, data: any) {
+    console.log("Generating file from template:", templatePath, "with data:", JSON.stringify(data, null, 2));
     const template = fs.readFileSync(templatePath, 'utf-8');
+    console.log("Template content:", template);
     const content = ejs.render(template, data);
+    console.log("Rendered content:", content);
     fs.writeFileSync(outputPath, content, 'utf-8');
     console.log(`Generated ${outputPath}`);
 }
 
-// Example usage
+// Exemplo de uso
 (async () => {
+    console.log("Generating components from schema..."); 
     const schema = {
         properties: {
             id: { type: 'integer' },
@@ -52,8 +61,13 @@ async function generateFileFromTemplate(templatePath: string, outputPath: string
             published: { type: 'boolean' },
         },
     };
+
+    console.log("Schema being used:", JSON.stringify(schema, null, 2)); 
     
     const resourceName = 'Post';
+
+    console.log("Resource name:", resourceName);
+
     await generateComponentsFromSchema(schema, resourceName);
     await generateAppFile([resourceName]);
 })();
