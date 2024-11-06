@@ -1,16 +1,15 @@
 // src/App.tsx
 
-import React from 'react';
 import { Admin, Resource } from 'react-admin';
 import jsonServerProvider from 'ra-data-json-server';
 <% resources.forEach(resource => { %>
-import <%= resource %>List from './<%= resource %>List';
-import <%= resource %>Create from './<%= resource %>Create';
-import <%= resource %>Edit from './<%= resource %>Edit';
+import { <%= resource %>List } from './<%= resource %>List';
+import { <%= resource %>Create } from './<%= resource %>Create';
+import { <%= resource %>Edit } from './<%= resource %>Edit';
 <% }) %>
 const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
-const App: React.FC = () => (
+export const App = () => (
     <Admin dataProvider={dataProvider}>
         <% resources.forEach(resource => { %>
         <Resource
@@ -22,5 +21,3 @@ const App: React.FC = () => (
         <% }) %>
     </Admin>
 );
-
-export default App;
