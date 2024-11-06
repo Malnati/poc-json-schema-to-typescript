@@ -7,10 +7,12 @@ import { <%= resource %>List } from './<%= resource %>List';
 import { <%= resource %>Create } from './<%= resource %>Create';
 import { <%= resource %>Edit } from './<%= resource %>Edit';
 <% }) %>
+import { Dashboard } from './Dashboard';
+
 const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
 export const App = () => (
-    <Admin dataProvider={dataProvider}>
+    <Admin dataProvider={dataProvider} dashboard={Dashboard}>
         <% resources.forEach(resource => { %>
         <Resource
             name="<%= resource.toLowerCase() %>s"
