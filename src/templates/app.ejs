@@ -8,6 +8,7 @@ import { <%= resource %>Create } from './<%= resource %>Create';
 import { <%= resource %>Edit } from './<%= resource %>Edit';
 <% }) %>
 import { Dashboard } from './Dashboard';
+import WidgetsIcon from '@mui/icons-material/Widgets';
 
 const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
@@ -19,6 +20,7 @@ export const App = () => (
             list={<%= resource %>List}
             create={<%= resource %>Create}
             edit={<%= resource %>Edit}
+            icon={WidgetsIcon}
         />
         <% }) %>
     </Admin>

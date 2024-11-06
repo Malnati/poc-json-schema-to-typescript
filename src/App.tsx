@@ -8,6 +8,7 @@ import { PostCreate } from './PostCreate';
 import { PostEdit } from './PostEdit';
 
 import { Dashboard } from './Dashboard';
+import WidgetsIcon from '@mui/icons-material/Widgets';
 
 const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
 
@@ -19,6 +20,7 @@ export const App = () => (
             list={PostList}
             create={PostCreate}
             edit={PostEdit}
+            icon={WidgetsIcon}
         />
         
     </Admin>
