@@ -19,9 +19,7 @@ export const Dashboard = () => {
             <CardContent>
                 <Box textAlign="center" mb={3}>
                     <Typography variant="body1">
-                        Esta aplicação permite que você configure e gere automaticamente um back-end completo em Node.js utilizando o framework NestJS. 
-                        Você pode definir os parâmetros da aplicação, escolher o banco de dados (PostgreSQL ou MySQL) e, com um clique, gerar o código-fonte
-                        necessário para um novo projeto.
+                        Nulla commodo nostrud laborum elit sunt reprehenderit consequat voluptate. Qui elit qui aliquip ad. Fugiat proident quis est nulla deserunt. Laborum consectetur nisi voluptate fugiat duis.
                     </Typography>
                 </Box>
 
@@ -33,7 +31,7 @@ export const Dashboard = () => {
                         onClick={() => navigate("/apps/create")}
                         style={{ marginRight: "10px" }}
                     >
-                        Inserir Nova Aplicação
+                        Inserir 
                     </Button>
                     <Button
                         variant="outlined"
@@ -41,21 +39,16 @@ export const Dashboard = () => {
                         startIcon={<CodeIcon />}
                         onClick={() => navigate("/apps")}
                     >
-                        Ver Aplicações Geradas
+                        Listar
                     </Button>
                 </Box>
 
                 <Box mt={3}>
                     <Typography variant="h6" align="center" gutterBottom>
-                        Funcionalidades Disponíveis
+                        Adipisicing ullamco quis excepteur esse pariatur incididunt veniam ut.
                     </Typography>
                     <Typography variant="body2" align="center" paragraph>
-                        <ul style={{ listStyleType: "none", padding: 0 }}>
-                            <li>🔹 Inserir dados de uma nova aplicação</li>
-                            <li>🔹 Configurar banco de dados PostgreSQL ou MySQL</li>
-                            <li>🔹 Gerar código-fonte com uma estrutura pronta para produção</li>
-                            <li>🔹 Editar e visualizar aplicativos existentes</li>
-                        </ul>
+                        Excepteur est tempor incididunt voluptate adipisicing cillum irure pariatur pariatur irure ullamco dolor laborum non cillum. Magna pariatur dolor incididunt nostrud officia sit labore nulla esse pariatur Lorem. Cupidatat id ad labore et excepteur qui ipsum proident ex commodo id excepteur. Duis tempor officia reprehenderit excepteur commodo qui aliquip ea pariatur amet proident reprehenderit mollit ut labore. Consectetur velit proident nostrud ad. Veniam consequat commodo reprehenderit exercitation quis nisi voluptate ut consequat elit commodo. Lorem ad deserunt tempor est.
                     </Typography>
                 </Box>
             </CardContent>
