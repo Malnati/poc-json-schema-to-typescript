@@ -1,0 +1,20 @@
+// src/<%= name %>List.tsx
+
+import { List, ListActions, Datagrid, TextInput, ReferenceInput, <%=
+    Array.from(new Set(fields.map(field => field.component))).join(', ')
+%> } from 'react-admin';
+
+const filters = [
+    <TextInput key="search" source="q" label="Search" alwaysOn />,
+    <ReferenceInput key="id" source="id" label="Search" reference="posts" />,
+];
+
+export const <%= name %>List = () => (
+    <List emptyWhileLoading filters={filters} actions={<ListActions hasCreate />}>
+        <Datagrid rowClick="edit">
+            <% fields.forEach(field => { %>
+                <<%= field.component %> source="<%= field.name %>" />
+            <% }) %>
+        </Datagrid>
+    </List>
+);

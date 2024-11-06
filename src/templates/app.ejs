@@ -1,0 +1,27 @@
+// src/App.tsx
+
+import { Admin, Resource } from 'react-admin';
+import jsonServerProvider from 'ra-data-json-server';
+<% resources.forEach(resource => { %>
+import { <%= resource %>List } from './<%= resource %>List';
+import { <%= resource %>Create } from './<%= resource %>Create';
+import { <%= resource %>Edit } from './<%= resource %>Edit';
+<% }) %>
+import { Dashboard } from './Dashboard';
+import WidgetsIcon from '@mui/icons-material/Widgets';
+
+const dataProvider = jsonServerProvider('https://jsonplaceholder.typicode.com');
+
+export const App = () => (
+    <Admin dataProvider={dataProvider} dashboard={Dashboard}>
+        <% resources.forEach(resource => { %>
+        <Resource
+            name="<%= resource.toLowerCase() %>s"
+            list={<%= resource %>List}
+            create={<%= resource %>Create}
+            edit={<%= resource %>Edit}
+            icon={WidgetsIcon}
+        />
+        <% }) %>
+    </Admin>
+);
